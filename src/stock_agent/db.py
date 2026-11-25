@@ -15,6 +15,13 @@ CREATE TABLE IF NOT EXISTS prices (
     volume    INTEGER,
     PRIMARY KEY (ticker, date)
 );
+
+CREATE TABLE IF NOT EXISTS fetch_log (
+    ticker     TEXT PRIMARY KEY,
+    fetched_at TEXT NOT NULL,
+    source     TEXT NOT NULL,
+    days       INTEGER NOT NULL
+);
 """
 
 def get_conn(path: Path = DB_PATH) -> sqlite3.Connection:

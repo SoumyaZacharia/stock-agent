@@ -1,24 +1,21 @@
 import argparse
-from .db import get_conn
-from .prices import fetch_prices, save_prices
+import logging
+
+from .service import get_prices
+
 
 def main():
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     p = argparse.ArgumentParser(description="Fetch and store daily prices")
     p.add_argument("ticker")
     p.add_argument("--days", type=int, default=365)
+    p.add_argument("--force", action="store_true", help="skip the cache")
     args = p.parse_args()
 
-    df = fetch_prices(args.ticker, args.days)
-    conn = get_conn()
-    n = save_prices(conn, df)
-    print(f"Stored {n} rows for {args.ticker.upper()}")
+    df, source = get_prices(args.ticker, args.days, force=args.force)
+    print(f"{len(df)} rows for {args.ticker.upper()} (source: {source})")
+    print(df.tail(5)[["date", "close", "volume"]].to_string(index=False))
 
-    rows = conn.execute(
-        "SELECT date, close, volume FROM prices WHERE ticker=? "
-        "ORDER BY date DESC LIMIT 5", (args.ticker.upper(),)
-    ).fetchall()
-    for r in rows:
-        print(r)
 
 if __name__ == "__main__":
     main()
