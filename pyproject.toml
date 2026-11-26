@@ -1,13 +1,14 @@
 [project]
 name = "stock-agent"
 version = "0.1.0"
-description = "Add your description here"
+description = "Agent to retrieve and analyse daily stock market updates"
 readme = "README.md"
 authors = [
     { name = "soumyazach", email = "soumya@beebolt.com" }
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "mcp[cli]<2",
     "pandas>=2.3.3",
     "requests>=2.34.2",
     "tenacity>=9.2.1",
@@ -16,6 +17,7 @@ dependencies = [
 
 [project.scripts]
 stock-agent = "stock_agent.cli:main"
+stock-agent-mcp = "stock_agent.mcp_server.server:main"
 
 [build-system]
 requires = ["uv_build>=0.13.9,<0.14.0"]
